@@ -9,14 +9,14 @@ function User(name){
 	this.bet = 0;
 	this.hand = [];
 	this.hand2 = [];
-	this.handVal = 0;
+	this.handVal = [];
 	this.hit = function() {
 				console.log("hitting")
 
 				var deal = shuffled.splice(0,1)
 
 				if (deal[0].abrv == 'A'){
-					if ((this.handVal + 11)>21){
+					if ((this.handVal[0] + 11)>21){
 						deal[0].value = 1
 						console.log("Ace low")
 					}
@@ -26,21 +26,44 @@ function User(name){
 				
 					}
 				}
-				this.handVal = this.handVal + deal[0].value;
+				this.handVal[0] = this.handVal[0] + deal[0].value;
 				this.hand.push(deal[0]);
 
-				this.checkFunc();
+				this.checkFunc(0);
 			};
-	this.checkFunc = function(){
+	this.hitMore = function(n) {
+				console.log("hitting")
 
-			if (this.handVal == 21){
+				var deal = shuffled.splice(0,1)
+
+				if (deal[0].abrv == 'A'){
+					if ((this.handVal[n]+ 11)>21){
+						deal[0].value = 1
+						console.log("Ace low")
+					}
+					else{
+						deal[0].value = 11;	
+						console.log("Ace high")
+				
+					}
+				}
+				this.handVal[n] = this.handVal[n]+ deal[0].value;
+				console.log(this.handVal[n])
+				this.hand.push(deal[0]);
+
+
+				this.checkFunc(n);
+			};		
+	this.checkFunc = function(n){
+
+			if (this.handVal[n] == 21){
 				console.log("Player Blackjack")
 			}
-			else if (this.handVal>21){
+			else if (this.handVal[n]>21){
 				console.log("Player Busts")
 			}
 			else{
-				console.log("Player has " + this.handVal)
+				console.log("Player has " + this.handVal[n])
 			}
 		}		
 }

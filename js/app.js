@@ -44,7 +44,8 @@ var dealing = function(){
 		player[i].hand = deal;
 		
 		if (deal[0].abrv == 'A'){
-			if ((player[i].handVal + 11)>21){
+
+			if ((player[i].handVal[0] + 11)>21){
 				deal[0].value = 1
 				console.log("Ace low")
 			}
@@ -55,7 +56,7 @@ var dealing = function(){
 			}
 		}
 		else if (deal[1].abrv == 'A'){
-			if ((player[i].handVal + 11)>21){
+			if ((player[i].handVal[0] + 11)>21){
 				deal[1].value = 1
 				console.log("Ace low")
 			}
