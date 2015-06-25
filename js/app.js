@@ -31,43 +31,49 @@ var shuffled = shuffling();
 
 
 //deals to each player in player array, then dealer
-
-
-/////NEED TO FIX ACE HANDLING/////////
-
-
-
-
 var dealing = function(){
+	
+	//Resets player hand and value from last game
+	for (var i = 0;i<player.length;i++){
+		player[i].hand2 = [];
+		player[i].handVal = [];
+		player[i].splitHandVal = [];
+	};
+	
 	for (var i = 0;i<player.length;i++){
 		var deal = shuffled.splice(0,2);
 		player[i].hand = deal;
-		
-		if (deal[0].abrv == 'A'){
 
-			if ((player[i].handVal[0] + 11)>21){
-				deal[0].value = 1
-				console.log("Ace low")
-			}
-			else{
-				deal[0].value = 11;	
-				console.log("Ace high")
-		
-			}
+		//Checks to see if both cards are aces
+		if ((deal[1].abrv) && ((deal[0].abrv == 'A') && (deal[1].abrv == 'A'))){
+			console.log("Holy shit it worked.")
+			//If both cards are aces, gives two values for each option (except 22 because that would bust)
+			player[i].handVal[0] = 13;
+			player[i].handVal[1] = 2;
 		}
+		//Checks to see if first card is an ace
+		else if (deal[0].abrv == 'A'){
+
+			//If first card is an ace, gives two hand values for each ace option
+			player[i].handVal[0] = deal[1].value + 11;
+			player[i].handVal[1] = deal[1].value + 1;
+
+		}
+
+		//Checks to see if second card is an ace
 		else if (deal[1].abrv == 'A'){
-			if ((player[i].handVal[0] + 11)>21){
-				deal[1].value = 1
-				console.log("Ace low")
-			}
-			else{
-				deal[1].value = 11;	
-				console.log("Ace high")
-		
-			}
+
+			//If second card is an ace, gives two hand values for each ace option
+			player[i].handVal[0] = deal[0].value + 11;
+			player[i].handVal[1] = deal[0].value + 1;
 		}
-		player[i].handVal = player[i].hand[0].value + player[i].hand[1].value
-		console.log(player[i].hand)
+
+		//If neither card is an ace
+		else{
+		player[i].handVal[0] = player[i].hand[0].value + player[i].hand[1].value;
+		}
+
+		player[i].checkFunc();
 	}
 
 
@@ -77,34 +83,31 @@ var dealing = function(){
 		if (deal[0].abrv == 'A'){
 			if ((dealer.handVal + 11)>21){
 				deal[0].value = 1
-				console.log("Ace low")
+				console.log("Dealer Ace low")
 			}
 			else{
 				deal[0].value = 11;	
-				console.log("Ace high")
+				console.log("Dealer Ace high")
 		
 			}
 		}
 		else if (deal[1].abrv == 'A'){
 			if ((dealer.handVal + 11)>21){
 				deal[1].value = 1
-				console.log("Ace low")
+				console.log("Dealer Ace low")
 			}
 			else{
 				deal[1].value = 11;	
-				console.log("Ace high")
+				console.log("Dealer Ace high")
 		
 			}
 		}
 
 	dealer.handVal = dealer.hand[0].value + dealer.hand[1].value
 
-	console.log(dealer.hand)
 }
 
 
-
-//Checking dealers hand
 
 
 

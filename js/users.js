@@ -10,60 +10,61 @@ function User(name){
 	this.hand = [];
 	this.hand2 = [];
 	this.handVal = [];
+	this.splitHandVal = [];
 	this.hit = function() {
-				console.log("hitting")
+			console.log("hitting")
 
-				var deal = shuffled.splice(0,1)
+			var deal = shuffled.splice(0,1)
 
-				if (deal[0].abrv == 'A'){
-					if ((this.handVal[0] + 11)>21){
-						deal[0].value = 1
-						console.log("Ace low")
-					}
-					else{
-						deal[0].value = 11;	
-						console.log("Ace high")
-				
-					}
+			//Checks to see if new card is an Ace
+			if (deal[0].abrv == 'A'){
+				console.log("New Card Ace")
+				//Checks to see if you already have 2 Aces
+				if((this.hand[0].abrv == 'A')&&(this.hand[1].abrv == 'A')){
+					console.log("What the fuck, three aces?")
+					this.handVal[0] = 3;
+					this.handVal[1] = 13;
+					this.handVal[2] = 14;
 				}
-				this.handVal[0] = this.handVal[0] + deal[0].value;
-				this.hand.push(deal[0]);
-
-				this.checkFunc(0);
-			};
-	this.hitMore = function(n) {
-				console.log("hitting")
-
-				var deal = shuffled.splice(0,1)
-
-				if (deal[0].abrv == 'A'){
-					if ((this.handVal[n]+ 11)>21){
-						deal[0].value = 1
-						console.log("Ace low")
-					}
-					else{
-						deal[0].value = 11;	
-						console.log("Ace high")
 				
-					}
+				//Checks to see if you already one Ace. If you have an Ace, handVal[0] will bust if you take 11 and handVal[1] will be equal to what handVal[0] was originally anyway, so it adds 1 and 11 to the second hand total
+				else if (this.handVal.length==2){
+						this.handVal[0] = this.handVal[1] + 11;
+						this.handVal[1] = this.handVal[1] + 1 ;
 				}
-				this.handVal[n] = this.handVal[n]+ deal[0].value;
-				console.log(this.handVal[n])
-				this.hand.push(deal[0]);
-
-
-				this.checkFunc(n);
-			};		
-	this.checkFunc = function(n){
-
-			if (this.handVal[n] == 21){
-				console.log("Player Blackjack")
+				//If you do not have an Ace, it creates two options for aces
+				else{
+					this.handVal[0] = this.handVal[0] + 11;
+					this.handVal[1] = this.handVal[0] + 1;	
+				}
 			}
-			else if (this.handVal[n]>21){
-				console.log("Player Busts")
-			}
+
+
 			else{
-				console.log("Player has " + this.handVal[n])
+				if (this.handVal.length==2){
+					this.handVal[0] = this.handVal[0] + deal[0].value;
+					this.handVal[1] = this.handVal[1] + deal[0].value;	
+				}
+				else{
+					this.handVal = this.handVal + deal[0].value;
+				}
+			}	
+
+				this.hand.push(deal[0]);
+				this.checkFunc(deal[0]);
+			};	
+	this.checkFunc = function(x){
+			for(var i=0; i<this.handVal.length;i++){
+
+				if (this.handVal[i] == 21){
+					console.log(this.name + " drew the " + x.name + " and has Blackjack")
+				}
+				else if (this.handVal[i]>21){
+					console.log(this.name + " drew the " + x.name + " and Busts")
+				}
+				else{
+					console.log(this.name + " drew the " + x.name + " and has " + this.handVal[i])
+				}
 			}
 		}		
 }
@@ -93,6 +94,9 @@ var dealer = {
 				this.hand.push(deal[0])	
 			},
 	dealerCheck : function(){
+
+
+
 					while(this.handVal <18){
 						this.hit();
 					};
