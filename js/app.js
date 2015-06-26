@@ -6,13 +6,13 @@ window.onload = function(){
 
 var myFirebaseRef = new Firebase("https://owens-blackjack.firebaseio.com/");
 
-myFirebaseRef.authAnonymously(function(error, authData) {
-  if (error) {
-    console.log("Login Failed!", error);
-  } else {
-    console.log("Authenticated successfully with payload:", authData);
-  }
-});
+// myFirebaseRef.authAnonymously(function(error, authData) {
+//   if (error) {
+//     console.log("Login Failed!", error);
+//   } else {
+//     console.log("Authenticated successfully with payload:", authData);
+//   }
+// });
 
 
 //shuffles card array with 4 decks
@@ -121,9 +121,11 @@ var dealing = function(){
 
 
 
+
+
 var goTime = function(){
 	player[1] = new User($('#namebox').val());
-	usersRef.push(user1);
+	usersRef.set(user1);
 }
 
 

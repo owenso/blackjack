@@ -70,26 +70,26 @@ function User(name){
 					console.log(this.name + " got the " + x + " and has " + this.handVal[i])
 				}
 			}
-		}
+		};	
 	this.winCondition = function(){
 		if (this.busted){
-			console.log("Player busted")
+			console.log(this.name + " busted")
 			return false;
 		}
 		else if ((dealer.busted == true)&&(this.handVal[0]<=21)){
-			console.log("Dealer Busts, you win")
+			console.log(this.name + ", dealer Busts, you win")
 			return true;
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==true)){
-			console.log("push")
+			console.log(this.name + " - push")
 			return "push";
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==false)){
-			console.log("Dealer Blackjack. You Lose")
+			console.log(this.name + ", dealer Blackjack. You Lose")
 			return false;
 		}
 		else if (this.blackjack){
-			console.log("Blackjack, you win!")
+			console.log(this.name + " - Blackjack, you win!")
 			return true;
 		}
 		else if (this.handVal[0]>dealer.handVal){
@@ -99,6 +99,10 @@ function User(name){
 		else if (this.handVal[0]<dealer.handVal){
 			console.log("Dealer has " + dealer.handVal + " and " + this.name + " has " + this.handVal[0]);
 			return false;
+		}
+		else if (this.handVal[0]==dealer.handVal){
+			console.log(this.name + " - push");
+			return "push";
 		}		
 
 	}			
@@ -169,9 +173,16 @@ var dealer = {
 }
 
 
-
 var player=[];
 
 for (var i=0;i<5;i++){
 	 player[i]= new User ('placeholder-changeme_'+i);
+}
+
+
+var winners = function(){
+	dealer.dealerCheck()
+	for(var i=0;i<player.length;i++){
+		player[i].winCondition();
+	}
 }
