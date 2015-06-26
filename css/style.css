@@ -1,5 +1,6 @@
 body {
   background: #00a651;
+  width:100%;
 }
 
 
@@ -7,6 +8,38 @@ input{
    text-align:center;
 }
 
+
+#gamebuttondiv{
+	display:block;
+	position:absolute;
+	z-index: 100;
+	top:50%;
+	left:35%;
+	width:700px;
+}
+
+.gamebutton{
+	display:inline-block;
+	width: 150px;
+	height:75px;
+	border-radius: 20%;
+	border:5px solid gold;
+	background-color: #a07005;
+	color:white;
+	font-size: 36px;
+	margin:0 20px;
+
+}
+
+
+
+
+
+
+
+
+
+/*********CARDS*************/
 .cardBack{
 	float:left;
 	width:100px;
