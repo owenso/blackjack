@@ -1,7 +1,7 @@
-var usersRef = new Firebase('https://owens-blackjack.firebaseio.com/blackjack/users');
+var dealerDataRef = new Firebase('https://owens-blackjack.firebaseio.com/dealer_data');
 
 
-function User(name){
+function User(name, numberino){
 	this.name = name;
 	this.bank = 1000;
 	this.bet = 0;
@@ -11,6 +11,14 @@ function User(name){
 	this.splitHandVal = [];
 	this.busted = false;
 	this.blackjack = false;
+	this.won = false;
+	this.lost = false;
+	this.push = false;
+	this.betting = function(amnt){
+		this.bet += amnt;
+		this.bank = this.bank-this.bet;
+
+	};
 	this.hit = function() {
 			console.log("hitting")
 
@@ -45,6 +53,7 @@ function User(name){
 			}	
 				tellCard = deal[0].card;
 				this.hand.push(deal[0]);
+				playerDataRef.update({hand:player[myNumber].hand, handVal:player[myNumber].handVal});
 				this.checkFunc(tellCard);
 			};	
 	this.checkFunc = function(x){
@@ -61,6 +70,7 @@ function User(name){
 						console.log(this.handVal[i] + " is over 21 and is no longer being counted")
 						var removed = this.handVal.splice(i, 1);
 						console.log (removed)
+						playerDataRef.update({hand:this.hand})
 					}
 					else{
 						this.busted = true;
@@ -70,50 +80,100 @@ function User(name){
 					console.log(this.name + " got the " + x + " and has " + this.handVal[i])
 				}
 			}
+			playerDataRef.update({blackjack:this.blackjack, busted:this.busted})
 		};	
 	this.winCondition = function(){
 		if (this.busted){
-			console.log(this.name + " busted")
+			console.log(this.name + " busted");
+			this.win = false;
+			this.lost = true;
+			this.push = false;
 			return false;
 		}
 		else if ((dealer.busted == true)&&(this.handVal[0]<=21)){
-			console.log(this.name + ", dealer Busts, you win")
+			console.log(this.name + ", dealer Busts, you win");
+			this.won = true;
+			this.lost = false;
+			this.push = false;			
 			return true;
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==true)){
 			console.log(this.name + " - push")
+			this.push = true;
+			this.lost = false;
+			this.won = false;
 			return "push";
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==false)){
-			console.log(this.name + ", dealer Blackjack. You Lose")
+			console.log(this.name + ", dealer Blackjack. You Lose");
+			this.won = false;
+			this.lost = true;
+			this.push = false;
 			return false;
 		}
 		else if (this.blackjack){
-			console.log(this.name + " - Blackjack, you win!")
+			console.log(this.name + " - Blackjack, you win!");
+			this.won = true;
+			this.lost = false;
+			this.push = false;
 			return true;
 		}
 		else if (this.handVal[0]>dealer.handVal){
 			console.log("Dealer has " + dealer.handVal + " and " + this.name + " has " + this.handVal[0]);
+			this.won = true;
+			this.lost = false;
+			this.push = false;
 			return true;
 		}
 		else if (this.handVal[0]<dealer.handVal){
 			console.log("Dealer has " + dealer.handVal + " and " + this.name + " has " + this.handVal[0]);
+			this.won = false;
+			this.lost = true;
+			this.push = false;
 			return false;
 		}
 		else if (this.handVal[0]==dealer.handVal){
 			console.log(this.name + " - push");
+			this.push = true;
+			this.won = false;
+			this.lost = false;
 			return "push";
 		}		
 
-	}			
+	playerDataRef.update({push: this.push, won: this.won, lost:this.lost})			
+	}
 }
 
+
+
+var colorGiver = function(numberino){
+		switch(numberino) {
+	    case 0:
+	        return 'blue'
+	        break;
+	    case 1:
+	        return 'red'
+	        break;
+	    case 2:
+	        return 'darkorange'
+	        break;	    
+	    case 3:
+	        return 'mediumorchid'
+	        break;	    
+	    case 4:
+	        return 'green'
+	        break;
+	    default:
+	        console.log("the colors fucked up")
+		}
+}
 
 var dealer = {
 	hand:[],
 	handVal:0,
 	busted:false,
 	blackjack:false,
+	push:false,
 	hit: function() {
 			console.log("hitting")
 
@@ -139,6 +199,7 @@ var dealer = {
 						this.hit();
 					};
 					this.checkFunc();
+					this.dealerUpload();
 				},
 	checkFunc : function(){
 
@@ -167,22 +228,13 @@ var dealer = {
 			return false;
 		}
 		}
-	}
+	},
+	dealerUpload: function(){
+	 	dealerDataRef.update({userId: 'dealer', name: 'dealer', hand: dealer.hand, handVal: this.handVal, busted:this.busted, blackjack:this.blackjack});
+}
 
 
 }
 
 
 var player=[];
-
-for (var i=0;i<5;i++){
-	 player[i]= new User ('placeholder-changeme_'+i);
-}
-
-
-var winners = function(){
-	dealer.dealerCheck()
-	for(var i=0;i<player.length;i++){
-		player[i].winCondition();
-	}
-}

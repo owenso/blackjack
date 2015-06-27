@@ -1,18 +1,22 @@
 console.log("App Loaded")
 
 window.onload = function(){
-	$('#playbutton').on('click', go)
+	$('#playbutton').on('click', go);
+	$('#namebox').on('keypress', function (e){
+		if (e.keyCode == 13){
+			go();
+		}
+	});
+	$('#messageInput').keypress(function (e) {
+  		if (e.keyCode == 13) {
+    	var name = player[myNumber].name
+    	var text = $('#messageInput').val();
+    	myChatRef.push({name: name, text: text, playernum: myNumber});
+    	$('#messageInput').val('');
+  		}
+	});
+
 }
-
-var myFirebaseRef = new Firebase("https://owens-blackjack.firebaseio.com/");
-
-// myFirebaseRef.authAnonymously(function(error, authData) {
-//   if (error) {
-//     console.log("Login Failed!", error);
-//   } else {
-//     console.log("Authenticated successfully with payload:", authData);
-//   }
-// });
 
 
 //shuffles card array with 4 decks
@@ -27,46 +31,64 @@ var shuffled = shuffling();
 
 
 
+var myNumber;
+var playerDataRef;
+var myFirebaseRef = new Firebase("https://owens-blackjack.firebaseio.com/");
+var listOfPlayers = new Firebase('https://owens-blackjack.firebaseio.com/player_list');
+var currentPlayers = 0;
+
+
+
+//To get names of players as they are added
+// listOfPlayers.on("child_added", function(snapshot){	
+// 	console.log(snapshot.val())
+// })
+
+
+//Dynamically calculates #of players
+myFirebaseRef.on('value', function(snapshot){
+	currentPlayers = snapshot.child('player_list').numChildren();
+})
+
+
+
+
 
 
 
 //deals to each player in player array, then dealer
 var dealing = function(){
-	
-	//Resets player and dealer hand and value from last game
-	for (var i = 0;i<player.length;i++){
-		player[i].hand2 = [];
-		player[i].handVal = [];
-		player[i].splitHandVal = [];
-		player[i].blackjack = false;
-		player[i].busted = false;
-		dealer.handVal = 0;
-		dealer.blackjack= false;
-		dealer.busted=false;
-	};
-	
-	for (var i = 0;i<player.length;i++){
+	//Resets player and dealer hand and value from last game	
+		player[myNumber].hand2 = [];
+		player[myNumber].handVal = [];
+		player[myNumber].splitHandVal = [];
+		player[myNumber].blackjack = false;
+		player[myNumber].busted = false;
+		player[myNumber].push = false;
+		player[myNumber].won = false;
+		player[myNumber].lost = false;
+
 
 		//Shuffles in new cards if deck is less than 10
 		if (shuffled.length<10){
 			shuffled = shuffling()
 		}
 		var deal = shuffled.splice(0,2);
-		player[i].hand = deal;
+		player[myNumber].hand = deal;
 
 		//Checks to see if both cards are aces
 		if ((deal[1].abrv) && ((deal[0].abrv == 'A') && (deal[1].abrv == 'A'))){
 			console.log("Holy shit it worked.")
 			//If both cards are aces, gives two values for each option (except 22 because that would bust)
-			player[i].handVal[0] = 13;
-			player[i].handVal[1] = 2;
+			player[myNumber].handVal[0] = 13;
+			player[myNumber].handVal[1] = 2;
 		}
 		//Checks to see if first card is an ace
 		else if (deal[0].abrv == 'A'){
 
 			//If first card is an ace, gives two hand values for each ace option
-			player[i].handVal[0] = deal[1].value + 11;
-			player[i].handVal[1] = deal[1].value + 1;
+			player[myNumber].handVal[0] = deal[1].value + 11;
+			player[myNumber].handVal[1] = deal[1].value + 1;
 
 		}
 
@@ -74,19 +96,25 @@ var dealing = function(){
 		else if (deal[1].abrv == 'A'){
 
 			//If second card is an ace, gives two hand values for each ace option
-			player[i].handVal[0] = deal[0].value + 11;
-			player[i].handVal[1] = deal[0].value + 1;
+			player[myNumber].handVal[0] = deal[0].value + 11;
+			player[myNumber].handVal[1] = deal[0].value + 1;
 		}
 
 		//If neither card is an ace
 		else{
-		player[i].handVal[0] = player[i].hand[0].value + player[i].hand[1].value;
+		player[myNumber].handVal[0] = player[myNumber].hand[0].value + player[myNumber].hand[1].value;
 		}
-		tellCard = player[i].hand[0].card + " and the " + player[i].hand[1].card; 
-		player[i].checkFunc(tellCard);
-	}
+		tellCard = player[myNumber].hand[0].card + " and the " + player[myNumber].hand[1].card; 
+		player[myNumber].checkFunc(tellCard);
 
+		playerDataRef.update({hand:player[myNumber].hand, handVal:player[myNumber].handVal});
 
+		if (myNumber == 0){
+			dealerDealing();
+		}
+
+}
+var dealerDealing = function(){
 	var deal = shuffled.splice(0,2);
 	dealer.hand = deal;
 
@@ -113,60 +141,19 @@ var dealing = function(){
 			}
 		}
 	dealer.handVal = dealer.hand[0].value + dealer.hand[1].value
+
+	dealerDataRef.set({hand:dealer.hand, handVal:dealer.handVal});
+
 	console.log("Dealer has " + dealer.hand[0].card + " and " + dealer.hand[1].card + " for " + dealer.handVal)
-
 }
 
-
-
-
-
-
-
-var goTime = function(){
-	player[1] = new User($('#namebox').val());
-	usersRef.set(user1);
-}
-
-
-
-
-
-
-
-
-
-// var user1;
-// var userId = 1;
-// var goTime = function(){
-// 	user1 = new User($('#namebox').val())
-// 	user1.hand.push({
-// 	card:"Ace of Spades",
-// 	abrv:"A",
-// 	suit:"Spades",
-// 	value:[11,1],
-// 	facedown:true
-// 	})
-// 	user1.hand.push({
-// 	card:"King of Spades",
-// 	abrv:"K",
-// 	suit:"Spades",
-// 	value:10,
-// 	facedown:true
-// 	})
-// 	$('#pregame').empty()
-// 	usersRef.set({
-// 		name:user1.name,	
-// 		bank: user1.bank,
-// 		hand: user1.hand,
-// 		hand2: user1.hand2
-// 	});
-// }
 
 
 
 function go() {
+
   var userId = $('#namebox').val()
+
   // Consider adding '/<unique id>' if you have multiple games.
   var gameRef = new Firebase(GAME_LOCATION);
   assignPlayerNumberAndPlayGame(userId, gameRef);
@@ -190,19 +177,29 @@ var PLAYER_DATA_LOCATION = 'player_data';
  
 // Called after player assignment completes.
 function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
-  var playerDataRef = gameRef.child(PLAYER_DATA_LOCATION).child(myPlayerNumber);
-  alert('You are player number ' + myPlayerNumber + 
+  playerDataRef = gameRef.child(PLAYER_DATA_LOCATION).child(myPlayerNumber);
+  player[myPlayerNumber] = new User($('#namebox').val(), myPlayerNumber);
+  myNumber = myPlayerNumber;
+  playerDataRef.onDisconnect().remove();
+  gameRef.child(PLAYERS_LOCATION).child(myPlayerNumber).onDisconnect().remove();
+  $('#pregame').remove();
+
+
+  console.log('You are player number ' + myPlayerNumber + 
       '.  Your data will be located at ' + playerDataRef.toString());
  
   if (justJoinedGame) {
-    alert('Doing first-time initialization of data.');
-    playerDataRef.set({userId: userId, state: 'game state'});
+    console.log('Doing first-time initialization of data.');
+    playerDataRef.set({userId: userId, name: player[myPlayerNumber].name, bank: player[myPlayerNumber].bank, bet:player[myPlayerNumber].bet, busted:player[myPlayerNumber].busted, blackjack:player[myPlayerNumber].blackjack, push:player[myPlayerNumber].push, won:player[myPlayerNumber].won, lost:player[myPlayerNumber].lost,
+    });
   }
 }
  
 // Use transaction() to assign a player number, then call playGame().
 function assignPlayerNumberAndPlayGame(userId, gameRef) {
-  var playerListRef = gameRef.child(PLAYERS_LOCATION);
+  playerListRef = gameRef.child(PLAYERS_LOCATION);
+
+
   var myPlayerNumber, alreadyInGame = false;
  
   playerListRef.transaction(function(playerList) {
@@ -238,6 +235,7 @@ function assignPlayerNumberAndPlayGame(userId, gameRef) {
  
     // Abort transaction and tell completion callback we failed to join.
     myPlayerNumber = null;
+
   }, function (error, committed) {
     // Transaction has completed.  Check if it succeeded or we were already in
     // the game and so it was aborted.

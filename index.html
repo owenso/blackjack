@@ -6,15 +6,17 @@
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
 	<script src="https://cdn.firebase.com/js/client/2.2.7/firebase.js"></script>	
+	<link href='http://fonts.googleapis.com/css?family=Francois+One' rel='stylesheet' type='text/css'>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 </head>
 <body>
 	<script type="text/javascript" src='js/chips.js'></script>
 	<script type="text/javascript" src='js/deck.js'></script>
 	<script type="text/javascript" src='js/users.js'></script>
 	<script type="text/javascript" src='js/app.js'></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
+	<script type="text/javascript" src='js/chat.js'></script>
+	
 	<div id="pregame">
 	<h1>Blackjack!</h1>
 	<input placeholder = "Name" id = "namebox"></input>
@@ -22,16 +24,22 @@
 	</div>
 
 	<div class = "suitHearts card"><p>A</p></div>
-	<div class = "suitClubs card"><p>A</p></div>
-	<div class = "suitSpades card"><p>A</p></div>
-	<div class = "suitDiamonds card"><p>A</p></div>
+	<div class = "suitClubs card"><p>Q</p></div>
+	<div class = "suitSpades card"><p>K</p></div>
+	<div class = "suitDiamonds card"><p>J</p></div>
 	<div class = "cardBack card"></div>
 
 	<div id = "gamebuttondiv">
 		<button class = "gamebutton">HIT</button>
 		<button class = "gamebutton">STAND</button>
 	</div>
+	<div id = "playerhand">
 
-
+	
+	</div>	
+	<div id ="chatbox">
+		<div id='messagesDiv'></div>
+	    <input type='text' id='messageInput' placeholder='Message'>
+    </div>
 </body>
 </html>
