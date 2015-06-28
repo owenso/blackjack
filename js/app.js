@@ -15,7 +15,6 @@ window.onload = function(){
     	$('#messageInput').val('');
   		}
 	});
-
 }
 
 
@@ -35,6 +34,7 @@ var myNumber;
 var playerDataRef;
 var myFirebaseRef = new Firebase("https://owens-blackjack.firebaseio.com/");
 var listOfPlayers = new Firebase('https://owens-blackjack.firebaseio.com/player_list');
+var dealerDataRef = new Firebase('https://owens-blackjack.firebaseio.com/dealer_data');
 var currentPlayers = 0;
 
 
@@ -109,11 +109,34 @@ var dealing = function(){
 
 		playerDataRef.update({hand:player[myNumber].hand, handVal:player[myNumber].handVal});
 
+		//Adds card to DOM
+		playerCardDOM();
+		
+		//Player 0 activates the dealer's cards
 		if (myNumber == 0){
 			dealerDealing();
 		}
 
+
+
+		//For players other than player[0], gets dealer data from firebase whever it is changed.
+
+		dealerDataRef.on('value', function(snapshot){
+		if (myNumber !== 0){
+			dealer.blackjack = snapshot.val().blackjack;
+			dealer.busted = snapshot.val().busted;
+			dealer.handVal = snapshot.val().handVal;
+			dealer.hand = snapshot.val().hand;
+			}
+		})
+
+
+		if (myNumber!==0){
+			dealerCardDOM();
+		}
 }
+
+
 var dealerDealing = function(){
 	var deal = shuffled.splice(0,2);
 	dealer.hand = deal;
@@ -144,8 +167,43 @@ var dealerDealing = function(){
 
 	dealerDataRef.set({hand:dealer.hand, handVal:dealer.handVal});
 
+	dealerCardDOM();
+
 	console.log("Dealer has " + dealer.hand[0].card + " and " + dealer.hand[1].card + " for " + dealer.handVal)
+
 }
+
+
+var dealerCardDOM = function(){
+	for(var i = 0; i<dealer.hand.length; i++){
+		var card = $('<div>').addClass('suit'+ dealer.hand[i].suit).appendTo('#dealerhand');
+		$('<p>').text(dealer.hand[i].abrv).appendTo(card);
+	}	
+}
+
+var dealerHitDOM = function(){
+	var card = $('<div>').addClass('suit'+ dealer.hand[dealer.hand.length-1].suit).appendTo('#dealerhand');
+	$('<p>').text(dealer.hand[dealer.hand.length-1].abrv).appendTo(card);
+}
+
+var playerCardDOM = function(){
+	for(var i = 0; i<player[myNumber].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[myNumber].hand[i].suit).appendTo('#playerhand');
+		$('<p>').text(player[myNumber].hand[i].abrv).appendTo(card);
+	}
+}
+
+var playerHitDOM = function(){
+	var card = $('<div>').addClass('suit'+ player[myNumber].hand[player[myNumber].hand.length-1].suit).appendTo('#playerhand');
+	$('<p>').text(player[myNumber].hand[player[myNumber].hand.length-1].abrv).appendTo(card);
+}
+
+
+
+
+
+
+
 
 
 
@@ -182,7 +240,13 @@ function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
   myNumber = myPlayerNumber;
   playerDataRef.onDisconnect().remove();
   gameRef.child(PLAYERS_LOCATION).child(myPlayerNumber).onDisconnect().remove();
+
+  //removes name box
   $('#pregame').remove();
+
+
+  //activates the hit button - "proxy" makes it so that "this" doesnt point at the button
+  $('#hitbutton').on('click', $.proxy(player[myNumber].hit, player[myNumber]));
 
 
   console.log('You are player number ' + myPlayerNumber + 
@@ -190,7 +254,7 @@ function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
  
   if (justJoinedGame) {
     console.log('Doing first-time initialization of data.');
-    playerDataRef.set({userId: userId, name: player[myPlayerNumber].name, bank: player[myPlayerNumber].bank, bet:player[myPlayerNumber].bet, busted:player[myPlayerNumber].busted, blackjack:player[myPlayerNumber].blackjack, push:player[myPlayerNumber].push, won:player[myPlayerNumber].won, lost:player[myPlayerNumber].lost,
+    playerDataRef.set({userId: userId, name: player[myPlayerNumber].name, bank: player[myPlayerNumber].bank, bet:player[myPlayerNumber].bet, busted:player[myPlayerNumber].busted, blackjack:player[myPlayerNumber].blackjack, push:player[myPlayerNumber].push, won:player[myPlayerNumber].won, lost:player[myPlayerNumber].lost, turn:player[myPlayerNumber].turn
     });
   }
 }

@@ -1,4 +1,3 @@
-var dealerDataRef = new Firebase('https://owens-blackjack.firebaseio.com/dealer_data');
 
 
 function User(name, numberino){
@@ -14,6 +13,7 @@ function User(name, numberino){
 	this.won = false;
 	this.lost = false;
 	this.push = false;
+	this.turn = false;
 	this.betting = function(amnt){
 		this.bet += amnt;
 		this.bank = this.bank-this.bet;
@@ -55,6 +55,12 @@ function User(name, numberino){
 				this.hand.push(deal[0]);
 				playerDataRef.update({hand:player[myNumber].hand, handVal:player[myNumber].handVal});
 				this.checkFunc(tellCard);
+
+
+
+			//Adds card to DOM
+			playerHitDOM();
+
 			};	
 	this.checkFunc = function(x){
 			for(var i=0; i<this.handVal.length;i++){
@@ -192,15 +198,21 @@ var dealer = {
 				}
 				this.handVal = this.handVal + deal[0].value
 				this.hand.push(deal[0])	
+
+				dealerHitDOM();
 			},
 	dealerCheck : function(){
-
-					while(this.handVal <18){
-						this.hit();
-					};
-					this.checkFunc();
-					this.dealerUpload();
-				},
+					if (myNumber = 0){
+						while(this.handVal <18){
+							this.hit();
+						};
+						this.checkFunc();
+						this.dealerUpload();
+					}
+					else{
+						dealerHitDOM();
+					}
+			},
 	checkFunc : function(){
 
 				if (this.handVal == 21){
