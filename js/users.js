@@ -2,7 +2,7 @@
 
 function User(name, numberino){
 	this.name = name;
-	this.bank = 1000;
+	this.bank = 10000;
 	this.bet = 0;
 	this.hand = [];
 	this.hand2 = [];
@@ -17,7 +17,7 @@ function User(name, numberino){
 	this.betting = function(amnt){
 		this.bet += amnt;
 		this.bank = this.bank-this.bet;
-
+		playerDataRef.update({bank:this.bank, bet:this.bet});
 	};
 	this.hit = function() {
 			console.log("hitting")
@@ -68,6 +68,8 @@ function User(name, numberino){
 				if (this.handVal[i] == 21){
 					console.log(this.name + " got the " + x + " and has Blackjack")
 					this.blackjack = true;
+					this.winCondition();			
+
 				}
 				else if (this.handVal[i]>21){
 					console.log(this.name + " got the " + x + " and Busts")
@@ -80,6 +82,9 @@ function User(name, numberino){
 					}
 					else{
 						this.busted = true;
+						this.winCondition();			
+						nextTurn();			
+
 					}
 				}
 				else{
@@ -94,59 +99,63 @@ function User(name, numberino){
 			this.win = false;
 			this.lost = true;
 			this.push = false;
-			return false;
 		}
 		else if ((dealer.busted == true)&&(this.handVal[0]<=21)){
 			console.log(this.name + ", dealer Busts, you win");
 			this.won = true;
 			this.lost = false;
-			this.push = false;			
-			return true;
+			this.push = false;	
+			this.bank = this.bank + this.bet + this.bet;			
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==true)){
 			console.log(this.name + " - push")
 			this.push = true;
 			this.lost = false;
 			this.won = false;
-			return "push";
+			this.bank = this.bank + this.bet;
+			
 		}
 		else if ((dealer.blackjack == true)&&(this.blackjack==false)){
 			console.log(this.name + ", dealer Blackjack. You Lose");
 			this.won = false;
 			this.lost = true;
-			this.push = false;
-			return false;
+			this.push = false;			
 		}
 		else if (this.blackjack){
 			console.log(this.name + " - Blackjack, you win!");
 			this.won = true;
 			this.lost = false;
 			this.push = false;
-			return true;
+			this.bank = this.bank + this.bet + (this.bet*1.5);
+			nextTurn();
+	
+
 		}
 		else if (this.handVal[0]>dealer.handVal){
 			console.log("Dealer has " + dealer.handVal + " and " + this.name + " has " + this.handVal[0]);
 			this.won = true;
 			this.lost = false;
 			this.push = false;
-			return true;
+			this.bank = this.bank + this.bet + this.bet;			
 		}
 		else if (this.handVal[0]<dealer.handVal){
 			console.log("Dealer has " + dealer.handVal + " and " + this.name + " has " + this.handVal[0]);
 			this.won = false;
 			this.lost = true;
-			this.push = false;
-			return false;
+			this.push = false;			
 		}
 		else if (this.handVal[0]==dealer.handVal){
 			console.log(this.name + " - push");
 			this.push = true;
 			this.won = false;
 			this.lost = false;
-			return "push";
+			this.bank = this.bank + this.bet;
 		}		
+			
 
-	playerDataRef.update({push: this.push, won: this.won, lost:this.lost})			
+	playerDataRef.update({push: this.push, won: this.won, lost:this.lost, bank:this.bank})	
+	betDataRef.child(myNumber).remove();
+
 	}
 }
 
@@ -198,20 +207,15 @@ var dealer = {
 				}
 				this.handVal = this.handVal + deal[0].value
 				this.hand.push(deal[0])	
-
 				dealerHitDOM();
+
 			},
 	dealerCheck : function(){
-					if (myNumber = 0){
 						while(this.handVal <18){
 							this.hit();
 						};
 						this.checkFunc();
 						this.dealerUpload();
-					}
-					else{
-						dealerHitDOM();
-					}
 			},
 	checkFunc : function(){
 
@@ -242,7 +246,7 @@ var dealer = {
 		}
 	},
 	dealerUpload: function(){
-	 	dealerDataRef.update({userId: 'dealer', name: 'dealer', hand: dealer.hand, handVal: this.handVal, busted:this.busted, blackjack:this.blackjack});
+	 	dealerDataRef.update({userId: 'dealer', name: 'dealer',push:this.push, busted:this.busted, blackjack:this.blackjack, hand:this.hand, handVal : this.handVal});
 }
 
 

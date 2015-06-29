@@ -36,13 +36,16 @@ var myFirebaseRef = new Firebase("https://owens-blackjack.firebaseio.com/");
 var listOfPlayers = new Firebase('https://owens-blackjack.firebaseio.com/player_list');
 var dealerDataRef = new Firebase('https://owens-blackjack.firebaseio.com/dealer_data');
 var currentPlayers = 0;
+var playerArrayRef = new Firebase('https://owens-blackjack.firebaseio.com/player_data');
+var player0Ref = new Firebase('https://owens-blackjack.firebaseio.com/player_data/0/')
+var player1Ref = new Firebase('https://owens-blackjack.firebaseio.com/player_data/1/')
+var player2Ref = new Firebase('https://owens-blackjack.firebaseio.com/player_data/2/')
+var player3Ref = new Firebase('https://owens-blackjack.firebaseio.com/player_data/3/')
+var player4Ref = new Firebase('https://owens-blackjack.firebaseio.com/player_data/4/')
+var gameDataRef = new Firebase('https://owens-blackjack.firebaseio.com/game_data/')
+var betDataRef = new Firebase('https://owens-blackjack.firebaseio.com/game_data/betCount/')
 
 
-
-//To get names of players as they are added
-// listOfPlayers.on("child_added", function(snapshot){	
-// 	console.log(snapshot.val())
-// })
 
 
 //Dynamically calculates #of players
@@ -51,6 +54,38 @@ myFirebaseRef.on('value', function(snapshot){
 })
 
 
+playerArrayRef.on('value', function(snapshot){
+	if (currentPlayers>0){
+	for (var i = 0; i < currentPlayers; i++) {
+		$('#player'+ i +"name").text(snapshot.val()[i].name);
+		$('#playermoney' + i).text(snapshot.val()[i].bank);
+		$('#player'+i+'icon').css('background', colorGiver(i));	
+		if (snapshot.val()[i].turn == true){
+			$('#player'+i+'icon').css('border', '4px solid white');
+		}
+		else{
+			$('#player'+i+'icon').css('border', 'none')
+		}
+		};
+	}	
+})
+
+// playerArrayRef.on('value', function(snapshot){
+// 	if(player[myNumber]){
+// 		if ((player[myNumber].bet) && (myNumber !== 0 ) && player[myNumber].hand.length == 0){
+// 			dealing();
+// 		}
+// 	}
+// })
+
+
+// playerArrayRef.on('value', function(snapshot){
+// 	if (player[myNumber]){
+// 		if ((snapshot.val()[myNumber].turn == true) && (player[myNumber].bet == 0)){
+// 			takeBets();
+// 		}
+// 	}
+// })
 
 
 
@@ -110,34 +145,63 @@ var dealing = function(){
 		playerDataRef.update({hand:player[myNumber].hand, handVal:player[myNumber].handVal});
 
 		//Adds card to DOM
-		playerCardDOM();
+		 playerCardDOM();
 		
 		//Player 0 activates the dealer's cards
-		if (myNumber == 0){
-			dealerDealing();
-		}
+		// if (myNumber == 0){
+		// 	// dealerDealing();
+
+		// }
 
 
 
-		//For players other than player[0], gets dealer data from firebase whever it is changed.
+		//Syncs other players data 
+		playerArrayRef.on('value', function(snapshot){
 
-		dealerDataRef.on('value', function(snapshot){
-		if (myNumber !== 0){
-			dealer.blackjack = snapshot.val().blackjack;
-			dealer.busted = snapshot.val().busted;
-			dealer.handVal = snapshot.val().handVal;
-			dealer.hand = snapshot.val().hand;
+
+			for(var i = 0; i<currentPlayers;i++){
+				if (myNumber !== i){
+					player[i] = snapshot.val()[i];
+					
+					if (player[i].hand){
+					updateArray[i]();
+					}
+				}
 			}
+
 		})
+	
+	
+	
 
 
-		if (myNumber!==0){
-			dealerCardDOM();
-		}
+		// //For players other than player[0], gets dealer data from firebase whever it is changed.
+
+		// dealerDataRef.on('value', function(snapshot){
+		// if (myNumber !== 0){
+		// 	dealer.blackjack = snapshot.val().blackjack;
+		// 	dealer.busted = snapshot.val().busted;
+		// 	dealer.handVal = snapshot.val().handVal;
+		// 	dealer.hand = snapshot.val().hand;
+		// 	}
+		// })
+
+
+
 }
 
 
+
+
 var dealerDealing = function(){
+	dealer.blackjack = false;
+	dealer.busted = false;
+	dealer.push = false;
+	dealer.hand = [];
+	dealer.handVal = 0;
+	dealerDataRef.update({blackjack:dealer.blackjack, busted:dealer.busted,push:dealer.push, hand:dealer.hand, handVal:dealer.handVal})
+
+
 	var deal = shuffled.splice(0,2);
 	dealer.hand = deal;
 
@@ -165,7 +229,8 @@ var dealerDealing = function(){
 		}
 	dealer.handVal = dealer.hand[0].value + dealer.hand[1].value
 
-	dealerDataRef.set({hand:dealer.hand, handVal:dealer.handVal});
+	dealerDataRef.update({hand:dealer.hand, handVal:dealer.handVal});
+
 
 	dealerCardDOM();
 
@@ -175,26 +240,39 @@ var dealerDealing = function(){
 
 
 var dealerCardDOM = function(){
-	for(var i = 0; i<dealer.hand.length; i++){
-		var card = $('<div>').addClass('suit'+ dealer.hand[i].suit).appendTo('#dealerhand');
-		$('<p>').text(dealer.hand[i].abrv).appendTo(card);
-	}	
+		var card = $('<div>').addClass('suit'+ dealer.hand[0].suit).appendTo('#dealerhand');
+		$('<p>').text(dealer.hand[0].abrv).appendTo(card);
+
+		var downcard = $('<div>').addClass('cardBack').appendTo('#dealerhand');
+		$('<p>').text(dealer.hand[1].abrv).css('visibility', 'hidden').appendTo(downcard);
+
 }
 
 var dealerHitDOM = function(){
-	var card = $('<div>').addClass('suit'+ dealer.hand[dealer.hand.length-1].suit).appendTo('#dealerhand');
-	$('<p>').text(dealer.hand[dealer.hand.length-1].abrv).appendTo(card);
+	console.log(dealer.hand.length)
+	for(var i=2;i<dealer.hand.length;i++){
+		var card = $('<div>').addClass('suit'+ dealer.hand[i].suit).appendTo('#dealerhand');
+		$('<p>').text(dealer.hand[i].abrv).appendTo(card);
+	}
+	
+	dealerCardReveal();
+
+}
+
+var dealerCardReveal = function(){
+	$('.cardBack p').css('visibility', 'visible');
+	$('.cardBack').addClass('suit'+ dealer.hand[1].suit).removeClass('cardBack');
 }
 
 var playerCardDOM = function(){
 	for(var i = 0; i<player[myNumber].hand.length; i++){
-		var card = $('<div>').addClass('suit'+ player[myNumber].hand[i].suit).appendTo('#playerhand');
+		var card = $('<div>').addClass('suit'+ player[myNumber].hand[i].suit).appendTo('#playerhand' + myNumber);
 		$('<p>').text(player[myNumber].hand[i].abrv).appendTo(card);
 	}
 }
 
 var playerHitDOM = function(){
-	var card = $('<div>').addClass('suit'+ player[myNumber].hand[player[myNumber].hand.length-1].suit).appendTo('#playerhand');
+	var card = $('<div>').addClass('suit'+ player[myNumber].hand[player[myNumber].hand.length-1].suit).appendTo('#playerhand' + myNumber);
 	$('<p>').text(player[myNumber].hand[player[myNumber].hand.length-1].abrv).appendTo(card);
 }
 
@@ -203,8 +281,124 @@ var playerHitDOM = function(){
 
 
 
+var playerUpdate0 = function(){
+	$('#playerhand0').empty();
+	for(var i = 0; i<player[0].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[0].hand[i].suit).appendTo('#playerhand0');
+		$('<p>').text(player[0].hand[i].abrv).appendTo(card);
+	}
+}
+var playerUpdate1 = function(){
+	$('#playerhand1').empty();
+	for(var i = 0; i<player[1].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[1].hand[i].suit).appendTo('#playerhand1');
+		$('<p>').text(player[1].hand[i].abrv).appendTo(card);
+	}
+}
+var playerUpdate2 = function(){
+	$('#playerhand2').empty();
+	for(var i = 0; i<player[2].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[2].hand[i].suit).appendTo('#playerhand2');
+		$('<p>').text(player[2].hand[i].abrv).appendTo(card);
+	}
+}
+var playerUpdate3 = function(){
+	$('#playerhand3').empty();
+	for(var i = 0; i<player[3].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[3].hand[i].suit).appendTo('#playerhand3');
+		$('<p>').text(player[3].hand[i].abrv).appendTo(card);
+	}
+}
+var playerUpdate4 = function(){
+	$('#playerhand4').empty();
+	for(var i = 0; i<player[4].hand.length; i++){
+		var card = $('<div>').addClass('suit'+ player[4].hand[i].suit).appendTo('#playerhand4');
+		$('<p>').text(player[4].hand[i].abrv).appendTo(card);
+	}
+}
+
+var updateArray = [playerUpdate0, playerUpdate1, playerUpdate2, playerUpdate3, playerUpdate4]
+
+var nextTurn = function(){
+	console.log('in here')
+		player[myNumber].turn = false;
+		playerDataRef.update({turn: player[myNumber].turn})
+
+		if (myNumber<4){
+			player[myNumber + 1].turn = true;
+			playerArrayRef.child(myNumber + 1).update({turn: true})
+		}
+	if (myNumber == 4){
+		dealer.dealerCheck();
+	}
+}
 
 
+var takeBets= function(){
+	var bettybet = parseInt(prompt('Place Your Bets!'))
+	player[myNumber].betting(bettybet)
+
+}
+
+
+var stand = function (){
+	console.log("standing")
+		nextTurn();
+	}
+
+
+
+var gameGo = function(){
+  	dealerDataRef.remove();
+
+
+	takeBets();
+
+  	betDataRef.child(myNumber).set({placeholder:myNumber})
+  	betDataRef.on('value', function(snapshot){
+  		if (snapshot.numChildren() == 5){
+  			if(myNumber == 0){
+  				dealerDealing();
+  			}
+
+
+
+  			dealing();
+
+
+			//For players other than player[0], gets dealer data from firebase whever it is changed.
+
+			dealerDataRef.on('value', function(snapshot){
+			
+				dealer.handVal = snapshot.val().handVal;
+				dealer.hand = snapshot.val().hand;
+				dealer.blackjack = snapshot.val().blackjack;
+				dealer.busted = snapshot.val().busted;
+				
+			if ((myNumber!==0)&&dealer.hand.length == 2){
+				dealerCardDOM();
+			}
+			if ((myNumber!==4)&&dealer.hand.length > 2) {
+				dealerHitDOM();
+			}
+			})
+
+
+
+
+
+	 	dealerDataRef.once('value', function(snapshot){
+	 		if(myNumber == 0){
+			  	player[0].turn = true;
+				playerDataRef.update({turn: true})
+			};
+	  	})
+  		}
+  	})
+
+
+  	// betDataRef.child(myNumber).remove();
+}
 
 
 
@@ -238,8 +432,13 @@ function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
   playerDataRef = gameRef.child(PLAYER_DATA_LOCATION).child(myPlayerNumber);
   player[myPlayerNumber] = new User($('#namebox').val(), myPlayerNumber);
   myNumber = myPlayerNumber;
+
+  //Remove player data when they leave
   playerDataRef.onDisconnect().remove();
   gameRef.child(PLAYERS_LOCATION).child(myPlayerNumber).onDisconnect().remove();
+  betDataRef.child(myPlayerNumber).onDisconnect().remove();
+
+
 
   //removes name box
   $('#pregame').remove();
@@ -247,6 +446,10 @@ function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
 
   //activates the hit button - "proxy" makes it so that "this" doesnt point at the button
   $('#hitbutton').on('click', $.proxy(player[myNumber].hit, player[myNumber]));
+  $('#standbutton').on('click', $.proxy(stand, player[myNumber]));
+
+
+
 
 
   console.log('You are player number ' + myPlayerNumber + 
@@ -257,6 +460,21 @@ function playGame(myPlayerNumber, userId, justJoinedGame, gameRef) {
     playerDataRef.set({userId: userId, name: player[myPlayerNumber].name, bank: player[myPlayerNumber].bank, bet:player[myPlayerNumber].bet, busted:player[myPlayerNumber].busted, blackjack:player[myPlayerNumber].blackjack, push:player[myPlayerNumber].push, won:player[myPlayerNumber].won, lost:player[myPlayerNumber].lost, turn:player[myPlayerNumber].turn
     });
   }
+
+ 
+
+
+  	//manages turns
+	playerDataRef.on('value', function(snapshot){
+		if ((snapshot.val().turn == true)&&(player[myNumber].hand.length>0)){
+			$('#gamebuttondiv').css('visibility', 'visible')
+		}
+		else{
+			$('#gamebuttondiv').css('visibility', 'hidden')
+		}
+	})
+
+gameGo();
 }
  
 // Use transaction() to assign a player number, then call playGame().
@@ -309,4 +527,27 @@ function assignPlayerNumberAndPlayGame(userId, gameRef) {
       alert('Game is full.  Can\'t join. :-(');
     }
   });
+
 }
+
+
+
+
+
+
+
+////In case I want to make the cards better
+	// var suitText = function(){
+	// 	if (dealer.hand[dealer.hand.length-1].suit == 'Diamonds'){
+	// 		return "♦"
+	// 	}
+	// 	else if ((dealer.hand[dealer.hand.length-1].suit == 'Hearts')){
+	// 		return "♥"
+	// 	}
+	// 	else if ((dealer.hand[dealer.hand.length-1].suit == 'Clubs')){
+	// 		return "♣"
+	// 	}
+	// 	else if ((dealer.hand[dealer.hand.length-1].suit == 'Spades')){
+	// 		return "♠"
+	// 	}
+	// }
