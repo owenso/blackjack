@@ -1,321 +1,321 @@
 body {
-  background: silver;
+    background: silver;
 }
 
-
-input{
-   text-align:center;
+input {
+    text-align: center;
 }
 
-
-#gamebuttondiv{
-	display:block;
-	position:absolute;
-	z-index: 100;
-	top:50%;
-	left:35%;
-	width:700px;
-	visibility: hidden;
+#gamebuttondiv {
+    display: block;
+    position: absolute;
+    z-index: 100;
+    top: 50%;
+    left: 35%;
+    width: 700px;
+    visibility: hidden;
 }
 
-.gamebutton{
-	display:inline-block;
-	width: 150px;
-	height:75px;
-	border-radius: 20%;
-	border:5px solid gold;
-	background-color: #a07005;
-	color:white;
-	font-size: 36px;
-	margin:0 20px;
-
+.gamebutton {
+    display: inline-block;
+    width: 150px;
+    height: 75px;
+    border-radius: 20%;
+    border: 5px solid gold;
+    background-color: #a07005;
+    color: white;
+    font-size: 36px;
+    margin: 0 20px;
 }
 
-#player0{
-	position: absolute;
-	left:10%;
-	top:32%;
-	width:400px;
-	display:flex;
-	justify-content:left;
-	height:90px;
-	z-index: 3;
-}
-#player1{
-	position: absolute;
-	left:15%;
-	top:62%;
-	width:400px;
-	display:flex;
-	justify-content:left;
-	height:90px;
-	z-index: 3;
-}
-#player2{
-	position: absolute;
-	bottom:15%;
-	margin-left: auto;
-	margin-right: auto;
-	left: 0;
-	right: 0;
-	width:400px;
-	display:flex;
-	justify-content:center;
-	height:90px;
-	z-index: 3;
-}
-#player3{
-	position: absolute;
-	right:15%;
-	top:62%;
-	width:400px;
-	display:flex;
-	justify-content:flex-end;
-	height:90px;
-	z-index: 3;
+#player0 {
+    position: absolute;
+    left: 10%;
+    top: 32%;
+    width: 400px;
+    display: flex;
+    justify-content: left;
+    height: 90px;
+    z-index: 3;
 }
 
-#player4{
-	position: absolute;
-	right:10%;
-	top:32%;
-	width:400px;
-	display:flex;
-	justify-content:flex-end;
-	height:90px;
-	z-index: 3;
+#player1 {
+    position: absolute;
+    left: 15%;
+    top: 62%;
+    width: 400px;
+    display: flex;
+    justify-content: left;
+    height: 90px;
+    z-index: 3;
 }
 
-#dealerhand{
-	position: absolute;
-	top:15%;
-	margin-left: auto;
-	margin-right: auto;
-	left: 0;
-	right: 0;
-	display:flex;
-	justify-content:center;
-	width:400px;
-	height:90px;
-	z-index: 3;
+#player2 {
+    position: absolute;
+    bottom: 15%;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    height: 90px;
+    z-index: 3;
 }
 
-#dealernameplate{
-	position:relative;
-	font-size: 24px;
-	position:absolute;
-	top: -26px;
-	left:40%;
+#player3 {
+    position: absolute;
+    right: 15%;
+    top: 62%;
+    width: 400px;
+    display: flex;
+    justify-content: flex-end;
+    height: 90px;
+    z-index: 3;
 }
 
-#table{
-	position:absolute;
-	top:15%;
-	margin-left: auto;
-	margin-right: auto;
-	left: 0;
-	right: 0;
-	width:1050px;
-	height: 550px;
-  	background: #00a651;
+#player4 {
+    position: absolute;
+    right: 10%;
+    top: 32%;
+    width: 400px;
+    display: flex;
+    justify-content: flex-end;
+    height: 90px;
+    z-index: 3;
+}
+
+#dealerhand {
+    position: absolute;
+    top: 15%;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    width: 400px;
+    height: 90px;
+    z-index: 3;
+}
+
+#dealernameplate {
+    position: relative;
+    font-size: 24px;
+    position: absolute;
+    top: -26px;
+    left: 40%;
+}
+
+#table {
+    position: absolute;
+    top: 15%;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    width: 1050px;
+    height: 550px;
+    background: #00a651;
     border-radius: 0 0 350px 350px;
     z-index: -1;
 }
 
-#player0icon{
-	width:100px;
-	height:100px;
-	background: black;
-	border-radius: 50%;
-	position: absolute;
-	left:-25%;
+#player0icon {
+    width: 100px;
+    height: 100px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    left: -25%;
 }
 
-#player1icon{
-	width:100px;
-	height:100px;
-	background: black;
-	border-radius: 50%;
-	position: absolute;
-	left:-25%;
-
+#player1icon {
+    width: 100px;
+    height: 100px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    left: -25%;
 }
 
-#player2icon{
-	width:100px;
-	height:100px;
-	background: black;
-	border-radius: 50%;
-	position: absolute;
-	top:100%;
-	left:38%;
-}
-#player3icon{
-	width:100px;
-	height:100px;
-	background: black;
-	border-radius: 50%;
-	position: absolute;
-	right:-25%;
-}
-#player4icon{
-	width:100px;
-	height:100px;
-	background: black;
-	border-radius: 50%;
-	position: absolute;
-	right: -25%;
+#player2icon {
+    width: 100px;
+    height: 100px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 100%;
+    left: 38%;
 }
 
-.nameplate{
-	background: whitesmoke;
-	position: absolute;
-	bottom: 0;
-	margin:0 auto;
-	width:100px;
-	text-align: center;
+#player3icon {
+    width: 100px;
+    height: 100px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    right: -25%;
 }
+
+#player4icon {
+    width: 100px;
+    height: 100px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    right: -25%;
+}
+
+.nameplate {
+    background: whitesmoke;
+    position: absolute;
+    bottom: 0;
+    margin: 0 auto;
+    width: 100px;
+    text-align: center;
+}
+
+
 /*********CARDS*************/
-.cardBack{
-	position: relative;	
-	float:left;
-	width:50px;
-	height:88px;
-	border:1px solid;
-	border-radius: 10%;
-	box-shadow: 2px 2px;
-	background: 
-	linear-gradient(63deg, #999 23%, transparent 23%) 7px 0, 
-	linear-gradient(63deg, transparent 74%, #999 78%), 
-	linear-gradient(63deg, transparent 34%, #999 38%, #999 58%, transparent 62%), 
-	#444;
-	background-size: 16px 48px;
+
+.cardBack {
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 88px;
+    border: 1px solid;
+    border-radius: 10%;
+    box-shadow: 2px 2px;
+    background: linear-gradient(63deg, #999 23%, transparent 23%) 7px 0, linear-gradient(63deg, transparent 74%, #999 78%), linear-gradient(63deg, transparent 34%, #999 38%, #999 58%, transparent 62%), #444;
+    background-size: 16px 48px;
 }
 
-
-.suitHearts{
-	position: relative;
-	float:left;
-	width:50px;
-	height:88px;
-	border:1px solid;
-	font-family: sans-serif;
-	font-size: 38px;
-	background-color: #F6F6F6;
-	border-radius: 10%;
-	box-shadow: 2px 2px
-
-}
-.suitHearts:before, .suitHearts:after {
-  content: "♥";
-  color: #ff0000;
+.suitHearts {
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 88px;
+    border: 1px solid;
+    font-family: sans-serif;
+    font-size: 38px;
+    background-color: #F6F6F6;
+    border-radius: 10%;
+    box-shadow: 2px 2px
 }
 
-.suitDiamonds{
-	position: relative;
-	float:left;
-	width:50px;
-	height:88px;
-	border:1px solid;
-	font-family: sans-serif;
-	font-size: 38px;
-	background-color: #F6F6F6;
-	border-radius: 10%;
-	box-shadow: 2px 2px
+.suitHearts:before,
+.suitHearts:after {
+    content: "♥";
+    color: #ff0000;
 }
 
-.suitDiamonds:before, .suitDiamonds:after {
-  content: "♦";
-  color: #ff0000;
+.suitDiamonds {
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 88px;
+    border: 1px solid;
+    font-family: sans-serif;
+    font-size: 38px;
+    background-color: #F6F6F6;
+    border-radius: 10%;
+    box-shadow: 2px 2px
 }
 
-.suitClubs{
-	position: relative;
-	float:left;
-	width:50px;
-	height:88px;
-	border:1px solid;
-	font-family: sans-serif;
-	font-size: 38px;
-	background-color: #F6F6F6;
-	border-radius: 10%;
-	box-shadow: 2px 2px
+.suitDiamonds:before,
+.suitDiamonds:after {
+    content: "♦";
+    color: #ff0000;
 }
 
-.suitClubs:before, .suitClubs:after {
-  content: "♣";
-  color: #000;
+.suitClubs {
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 88px;
+    border: 1px solid;
+    font-family: sans-serif;
+    font-size: 38px;
+    background-color: #F6F6F6;
+    border-radius: 10%;
+    box-shadow: 2px 2px
 }
 
-.suitSpades{
-	position: relative;
-	float:left;
-	width:50px;
-	height:88px;
-	border:1px solid;
-	font-family: sans-serif;
-	font-size: 38px;
-	background-color: #F6F6F6;
-	border-radius: 10%;
-	box-shadow: 2px 2px
+.suitClubs:before,
+.suitClubs:after {
+    content: "♣";
+    color: #000;
 }
 
-.suitSpades:before, .suitSpades:after {
-  content: "♠";
-  color: #000;
+.suitSpades {
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 88px;
+    border: 1px solid;
+    font-family: sans-serif;
+    font-size: 38px;
+    background-color: #F6F6F6;
+    border-radius: 10%;
+    box-shadow: 2px 2px
 }
 
-[class*='suit'] p{
-	position: relative;
-	text-align: center;
-	top: -23%;
-	font-family: 'Francois One', sans-serif;
-
+.suitSpades:before,
+.suitSpades:after {
+    content: "♠";
+    color: #000;
 }
 
+[class*='suit'] p {
+    position: relative;
+    text-align: center;
+    top: -23%;
+    font-family: 'Francois One', sans-serif;
+}
 
 div[class*='suit']:before {
-  position: absolute;
-  font-size: 30px;
-  left: 5px;
-  top: 0px;
+    position: absolute;
+    font-size: 30px;
+    left: 5px;
+    top: 0px;
 }
- 
+
 div[class*='suit']:after {
-  position: absolute;
-  font-size: 30px;
-  right: 5px;
-  bottom: 0px;
-  transform: rotate(180deg);
+    position: absolute;
+    font-size: 30px;
+    right: 5px;
+    bottom: 0px;
+    transform: rotate(180deg);
 }
-
-
-
 
 
 /*****************CHATBOX*****************/
+
 #chatbox {
-	width:300px;
-	height:100px;
-	position: absolute;
-	bottom:2%;
-	right:2%;
-	border: 2px solid black;
-	background: whitesmoke;
-	padding: 2px 2px 0 2px;
+    width: 300px;
+    height: 100px;
+    position: absolute;
+    bottom: 2%;
+    right: 2%;
+    border: 2px solid black;
+    background: whitesmoke;
+    padding: 2px 2px 0 2px;
 }
 
 #messagesDiv {
-	overflow:scroll;
-	height:90px;
+    overflow: scroll;
+    height: 90px;
 }
-#messagesDiv div:nth-child(even){
-	background:lightgrey;
-}
-#messageInput{
-	width:294px;
-	position: absolute;
-	bottom:0%;
-	text-align: left;
 
-} 
+#messagesDiv div:nth-child(even) {
+    background: lightgrey;
+}
+
+#messageInput {
+    width: 294px;
+    position: absolute;
+    bottom: 0%;
+    text-align: left;
+}
